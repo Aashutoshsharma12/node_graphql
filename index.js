@@ -26,6 +26,7 @@ type Vendor {
     token:String
     image:String
     totalSum:Int
+    data:String
 }
 type VendorDetails {
     vendor:Vendor!
@@ -139,6 +140,7 @@ const vendor_resolvers = {
                     userId: res._id
                 }, 'str34eet', { expiresIn: '30d' })
                 await sessionModel.create({ role: "Vendor", userId: res._id, status: true, token: token });
+                res.data = "data"
                 res.token = token
                 return (res);
             }
