@@ -6,6 +6,10 @@ const {vendorModel} = require('./models/vendor');
 const sessionModel = require('./models/session')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+const redis = require('ioredis')
+
+const publisher = redis.createClient({ host: '127.0.0.1', port: 6379, auth_pass: "P@ssw0rd" });
+
 const moment = require('moment')
 const MONGO_URL="mongodb+srv://tecorb:kumartec123@tecorb.juv3dbp.mongodb.net/GraphQL_Node?retryWrites=true&w=majority"
 mongoose.connect(MONGO_URL)
@@ -140,7 +144,9 @@ const vendor_resolvers = {
                     userId: res._id
                 }, 'str34eet', { expiresIn: '30d' })
                 await sessionModel.create({ role: "Vendor", userId: res._id, status: true, token: token });
-                res.data = "data"
+                const f = await publisher.lrange("details", 0, -1)
+                console.log(f, "redis_______________-----------")
+                res.data = f[0]
                 res.token = token
                 return (res);
             }
